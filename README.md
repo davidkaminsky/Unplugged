@@ -1,4 +1,4 @@
-unplugged
+Unplugged
 =========
 
 A simple iOS app that reminds you to unplug your charger when your iOS device stops charging.
