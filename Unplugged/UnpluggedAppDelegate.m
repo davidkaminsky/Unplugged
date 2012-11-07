@@ -86,7 +86,7 @@
 
 - (void)updateBatteryState:(UIDeviceBatteryState)batteryState
 {
-    if((batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull) && batteryState != lastBatteryState && lastBatteryState != UIDeviceBatteryStateUnknown)
+    if((batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull) && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown)
     {
         UILocalNotification *localNotif = [[UILocalNotification alloc] init];
         localNotif.fireDate=[NSDate date];
