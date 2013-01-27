@@ -17,9 +17,12 @@
 @synthesize sentNotification;
 @synthesize expirationHandler;
 @synthesize lastBatteryState;
+@synthesize jobExpired;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"Starting app");
+    
     self.powerHandler = [[PowerHandler alloc] init];
     self.lastBatteryState = UIDeviceBatteryStateUnknown;
     
@@ -29,7 +32,20 @@
         [app endBackgroundTask:self.bgTask];
         self.bgTask = UIBackgroundTaskInvalid;
         self.bgTask = [app beginBackgroundTaskWithExpirationHandler:expirationHandler];
+        NSLog(@"Expired");
+        self.jobExpired = YES;
+        while(self.jobExpired) {
+            // spin while we wait for the task to actually end.
+            [NSThread sleepForTimeInterval:1];
+        }
+        // Restart the background task so we can run forever.
+        [self startBackgroundTask];
     };
+    self.bgTask = [app beginBackgroundTaskWithExpirationHandler:expirationHandler];
+    
+    // Assume that we're in background at first since we get no notification from device that we're in background when
+    // app launches immediately into background (i.e. when powering on the device or when the app is killed and restarted)
+    [self monitorBatteryStateInBackground];
     
     return YES;
 }
@@ -43,18 +59,32 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    NSLog(@"Entered background");
+    [self monitorBatteryStateInBackground];
+}
+
+- (void)monitorBatteryStateInBackground
+{
+    NSLog(@"Monitoring battery state");
     self.background = YES;
     self.lastBatteryState = UIDeviceBatteryStateUnknown;
-    
-    UIApplication*    app = [UIApplication sharedApplication];
-    bgTask = [app beginBackgroundTaskWithExpirationHandler:expirationHandler];
-    
+    [self startBackgroundTask];
+}
+
+- (void)startBackgroundTask
+{
+    NSLog(@"Restarting task");
+    // Start the long-running task.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        while(self.background)
+        // When the job expires it still keeps running since we never exited it. Thus have the expiration handler
+        // set a flag that the job expired and use that to exit the while loop and end the task.
+        while(self.background && !self.jobExpired)
         {
             [self updateBatteryState:[self.powerHandler checkBatteryState]];
             [NSThread sleepForTimeInterval:1];
         }
+        
+        self.jobExpired = NO;
     });
 }
 
@@ -63,7 +93,6 @@
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */
-    self.background = NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -71,6 +100,9 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    
+    NSLog(@"App is active");
+    self.background = NO;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
