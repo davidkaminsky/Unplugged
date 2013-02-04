@@ -66,9 +66,13 @@
 
 - (void)updateBatteryState:(UIDeviceBatteryState)batteryState
 {
-    if(batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull)
+    if(batteryState == UIDeviceBatteryStateCharging)
     {
         self.chargingStatusLabel.text = @"Charging";
+    }
+    else if(batteryState == UIDeviceBatteryStateFull)
+    {
+        self.chargingStatusLabel.text = @"Battery Full";
     }
     else
     {

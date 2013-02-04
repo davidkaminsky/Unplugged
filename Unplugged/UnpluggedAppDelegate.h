@@ -19,5 +19,6 @@
 @property (strong, nonatomic) dispatch_block_t expirationHandler;
 @property (assign, nonatomic) UIDeviceBatteryState lastBatteryState;
 @property (assign, nonatomic) BOOL jobExpired;
+@property (assign, nonatomic) BOOL batteryFullNotificationDisplayed;
 
 @end

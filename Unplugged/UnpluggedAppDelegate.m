@@ -18,6 +18,7 @@
 @synthesize expirationHandler;
 @synthesize lastBatteryState;
 @synthesize jobExpired;
+@synthesize batteryFullNotificationDisplayed;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -118,19 +119,56 @@
 
 - (void)updateBatteryState:(UIDeviceBatteryState)batteryState
 {
-    if((batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull) && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown)
+    if([self shouldNotifyUnplugged:batteryState])
     {
-        UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-        localNotif.fireDate=[NSDate date];
-        localNotif.timeZone = [NSTimeZone defaultTimeZone];
-        localNotif.alertBody = @"Please unplug your charger.";
-        localNotif.alertAction = @"Reminder";
-        localNotif.soundName = UILocalNotificationDefaultSoundName;
-        localNotif.applicationIconBadgeNumber = 0;
-        [[UIApplication sharedApplication]presentLocalNotificationNow:localNotif];
+        [self notifyUnpluggedCharger];
+    }
+    else if([self shouldNotifyBatteryFull:batteryState]) {
+        [self notifyBatteryFull];
+        self.batteryFullNotificationDisplayed = YES;
+    }
+    else
+    {
+        // Should get here after it fails to show unplugged notification due to the fact that
+        // the battery full notification was displayed.
+        self.batteryFullNotificationDisplayed = NO;
     }
     
     self.lastBatteryState = batteryState;
+}
+
+- (BOOL)shouldNotifyUnplugged:(UIDeviceBatteryState)batteryState
+{
+    return ((batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull) && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown && !self.batteryFullNotificationDisplayed);
+}
+
+- (BOOL)shouldNotifyBatteryFull:(UIDeviceBatteryState)batteryState
+{
+    return (batteryState == UIDeviceBatteryStateFull && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown);
+}
+
+- (void)notifyUnpluggedCharger
+{
+    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+    localNotif.fireDate = [NSDate date];
+    localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    localNotif.alertBody = @"Please unplug charger.";
+    localNotif.alertAction = @"Reminder";
+    localNotif.soundName = UILocalNotificationDefaultSoundName;
+    localNotif.applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication]presentLocalNotificationNow:localNotif];
+}
+
+- (void)notifyBatteryFull
+{
+    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+    localNotif.fireDate = [NSDate date];
+    localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    localNotif.alertBody = @"Battery fully charged. Please unplug charger.";
+    localNotif.alertAction = @"Attention";
+    localNotif.soundName = UILocalNotificationDefaultSoundName;
+    localNotif.applicationIconBadgeNumber = 0;
+    [[UIApplication sharedApplication]presentLocalNotificationNow:localNotif];
 }
 
 @end
