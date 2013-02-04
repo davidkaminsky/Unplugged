@@ -25,6 +25,7 @@
 		723A6F0E1648F23E00F41EC2 /* laptop_charge_icon_iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 723A6F0D1648F23E00F41EC2 /* laptop_charge_icon_iphone.png */; };
 		725CF069164A276500548270 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 725CF068164A276500548270 /* Default-568h@2x.png */; };
 		725CF06B164A2C9C00548270 /* laptop_charge_icon_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 725CF06A164A2C9C00548270 /* laptop_charge_icon_ipad.png */; };
+		72FDB7F516BF474800B5D425 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 72FDB7F416BF474800B5D425 /* Settings.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		723A6F0D1648F23E00F41EC2 /* laptop_charge_icon_iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laptop_charge_icon_iphone.png; sourceTree = "<group>"; };
 		725CF068164A276500548270 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		725CF06A164A2C9C00548270 /* laptop_charge_icon_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = laptop_charge_icon_ipad.png; sourceTree = "<group>"; };
+		72FDB7F416BF474800B5D425 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			children = (
 				721F546D15C2683100F1F242 /* UnpluggedAppDelegate.h */,
 				721F546E15C2683100F1F242 /* UnpluggedAppDelegate.m */,
+				72FDB7F416BF474800B5D425 /* Settings.bundle */,
 				721F547015C2683100F1F242 /* MainStoryboard_iPhone.storyboard */,
 				721F547315C2683100F1F242 /* MainStoryboard_iPad.storyboard */,
 				721F547615C2683100F1F242 /* UnpluggedViewController.h */,
@@ -245,6 +248,7 @@
 				723A6F0E1648F23E00F41EC2 /* laptop_charge_icon_iphone.png in Resources */,
 				725CF069164A276500548270 /* Default-568h@2x.png in Resources */,
 				725CF06B164A2C9C00548270 /* laptop_charge_icon_ipad.png in Resources */,
+				72FDB7F516BF474800B5D425 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

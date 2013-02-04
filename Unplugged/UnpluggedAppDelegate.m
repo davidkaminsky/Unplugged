@@ -19,11 +19,13 @@
 @synthesize lastBatteryState;
 @synthesize jobExpired;
 @synthesize batteryFullNotificationDisplayed;
+@synthesize userDefaults;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSLog(@"Starting app");
     
+    userDefaults = [NSUserDefaults standardUserDefaults];
     self.powerHandler = [[PowerHandler alloc] init];
     self.lastBatteryState = UIDeviceBatteryStateUnknown;
     
@@ -66,6 +68,12 @@
 
 - (void)monitorBatteryStateInBackground
 {
+    if(![userDefaults boolForKey:@"unplugging_charger_preference"] && ![userDefaults boolForKey:@"battery_full_preference"])
+    {
+        // If the app's set to not show any notifications then don't bother going into background state.
+        return;
+    }
+    
     NSLog(@"Monitoring battery state");
     self.background = YES;
     self.lastBatteryState = UIDeviceBatteryStateUnknown;
@@ -139,12 +147,12 @@
 
 - (BOOL)shouldNotifyUnplugged:(UIDeviceBatteryState)batteryState
 {
-    return ((batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull) && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown && !self.batteryFullNotificationDisplayed);
+    return ([userDefaults boolForKey:@"unplugging_charger_preference"] && batteryState != UIDeviceBatteryStateCharging && batteryState != UIDeviceBatteryStateFull && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown && !self.batteryFullNotificationDisplayed);
 }
 
 - (BOOL)shouldNotifyBatteryFull:(UIDeviceBatteryState)batteryState
 {
-    return (batteryState == UIDeviceBatteryStateFull && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown);
+    return ([userDefaults boolForKey:@"battery_full_preference"] && batteryState == UIDeviceBatteryStateFull && batteryState != self.lastBatteryState && self.lastBatteryState != UIDeviceBatteryStateUnknown);
 }
 
 - (void)notifyUnpluggedCharger

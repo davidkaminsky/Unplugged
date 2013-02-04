@@ -20,5 +20,6 @@
 @property (assign, nonatomic) UIDeviceBatteryState lastBatteryState;
 @property (assign, nonatomic) BOOL jobExpired;
 @property (assign, nonatomic) BOOL batteryFullNotificationDisplayed;
+@property (strong, nonatomic) NSUserDefaults* userDefaults;
 
 @end
